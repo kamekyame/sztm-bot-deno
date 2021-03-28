@@ -9,6 +9,7 @@ import {
 } from "https://kamekyame.github.io/twitter_api_client/api_v2/tweets/filtered_stream.ts";
 
 import { Fortune } from "../fortune-bot/mod.ts";
+import { Janken } from "../janken-bot/mod.ts";
 
 const env = config({
   path: resolve("./.env"),
@@ -25,11 +26,19 @@ const auth = {
 
 const bearerToken = await getBearerToken(auth.consumerKey, auth.consumerSecret);
 
+const receiveUsername = "botTest46558316";
+
 const fortune = new Fortune(auth, bearerToken);
+fortune.setReceiveUsername(receiveUsername);
 await fortune.checkRule();
+
+const janken = new Janken(auth, bearerToken);
+janken.setReceiveUsername(receiveUsername);
+await janken.checkRule();
 
 connectStream(bearerToken, (res) => {
   fortune.callback(res);
+  janken.callback(res);
 }, {
   expansions: {
     author_id: true,
