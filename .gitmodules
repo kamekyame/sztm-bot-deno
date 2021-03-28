@@ -1,0 +1,6 @@
+[submodule "janken-bot"]
+	path = janken-bot
+	url = https://github.com/kamekyame/janken-bot.git
+[submodule "fortune-bot"]
+	path = fortune-bot
+	url = https://github.com/kamekyame/fortune-bot
