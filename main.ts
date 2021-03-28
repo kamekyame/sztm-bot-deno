@@ -26,7 +26,8 @@ const auth = {
 
 const bearerToken = await getBearerToken(auth.consumerKey, auth.consumerSecret);
 
-const receiveUsername = "botTest46558316";
+//const receiveUsername = "botTest46558316";
+const receiveUsername = "SuzuTomo2001";
 
 const fortune = new Fortune(auth, bearerToken);
 fortune.setReceiveUsername(receiveUsername);
