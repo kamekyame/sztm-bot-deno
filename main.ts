@@ -8,8 +8,8 @@ import {
   connectStream,
 } from "https://kamekyame.github.io/twitter_api_client/api_v2/tweets/filtered_stream.ts";
 
-import { Fortune } from "https://kamekyame.github.io/fortune-bot/mod.ts";
-import { Janken } from "https://kamekyame.github.io/janken-bot/mod.ts";
+import { Fortune } from "./fortune-bot/mod.ts";
+import { Janken } from "./janken-bot/mod.ts";
 
 const env = config({
   path: resolve("./.env"),
