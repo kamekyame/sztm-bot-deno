@@ -10,6 +10,7 @@ import {
 
 import { Fortune } from "./fortune-bot/mod.ts";
 import { Janken } from "./janken-bot/mod.ts";
+import MajiUranaiCollect, { option } from "./maji-uranai-collect-bot/mod.ts";
 
 const env = config({
   path: resolve("./.env"),
@@ -37,14 +38,22 @@ const janken = new Janken(auth, bearerToken);
 janken.setReceiveUsername(receiveUsername);
 await janken.checkRule();
 
-connectStream(bearerToken, (res) => {
-  fortune.callback(res);
-  janken.callback(res);
-}, {
-  expansions: {
-    author_id: true,
+const majiUranaiCollect = new MajiUranaiCollect(auth, bearerToken);
+await majiUranaiCollect.checkRule();
+
+connectStream(
+  bearerToken,
+  (res) => {
+    fortune.callback(res);
+    janken.callback(res);
+    majiUranaiCollect.callback(res);
   },
-  "user.fields": {
-    username: true,
-  },
-});
+  Object.assign({
+    expansions: {
+      author_id: true,
+    },
+    "user.fields": {
+      username: true,
+    },
+  }, option),
+);
