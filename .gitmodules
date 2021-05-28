@@ -4,3 +4,6 @@
 [submodule "fortune-bot"]
 	path = fortune-bot
 	url = https://github.com/kamekyame/fortune-bot
+[submodule "maji-uranai-collect-bot"]
+	path = maji-uranai-collect-bot
+	url = https://github.com/kamekyame/maji-uranai-collect-bot.git
