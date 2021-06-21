@@ -12,6 +12,8 @@ import { Fortune } from "./fortune-bot/mod.ts";
 import { Janken } from "./janken-bot/mod.ts";
 import MajiUranaiCollect, { option } from "./maji-uranai-collect-bot/mod.ts";
 
+import "./apiserver.ts";
+
 const env = config({
   path: resolve("./.env"),
   safe: true,
