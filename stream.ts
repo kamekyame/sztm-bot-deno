@@ -1,16 +1,18 @@
-import { config } from "https://deno.land/x/dotenv/mod.ts";
-
-import { pathResolver } from "https://kamekyame.github.io/deno_tools/path/mod.ts";
-const resolve = pathResolver(import.meta);
-
-import { getBearerToken } from "https://kamekyame.github.io/twitter_api_client/auth/oauth2.ts";
 import {
+  changeRules,
+  config,
   connectStream,
-} from "https://kamekyame.github.io/twitter_api_client/api_v2/tweets/filtered_stream.ts";
+  getBearerToken,
+  getRules,
+  pathResolver,
+  StreamParam,
+} from "./deps.ts";
+
+const resolve = pathResolver(import.meta);
 
 import { Fortune } from "./fortune-bot/mod.ts";
 import { Janken } from "./janken-bot/mod.ts";
-import MajiUranaiCollect, { option } from "./maji-uranai-collect-bot/mod.ts";
+import MajiUranaiCollect from "./maji-uranai-collect-bot/mod.ts";
 
 import "./apiserver.ts";
 
@@ -32,30 +34,53 @@ const bearerToken = await getBearerToken(auth.consumerKey, auth.consumerSecret);
 //const receiveUsername = "botTest46558316";
 const receiveUsername = "SuzuTomo2001";
 
-const fortune = new Fortune(auth, bearerToken);
+const fortune = new Fortune(auth);
 fortune.setReceiveUsername(receiveUsername);
-await fortune.checkRule();
 
-const janken = new Janken(auth, bearerToken);
+const janken = new Janken(auth);
 janken.setReceiveUsername(receiveUsername);
-await janken.checkRule();
 
-const majiUranaiCollect = new MajiUranaiCollect(auth, bearerToken);
-await majiUranaiCollect.checkRule();
+const majiUranaiCollect = new MajiUranaiCollect(auth);
+
+/*await changeRules(bearerToken, {
+  delete: { ids: ["1410767381161418761"] },
+});*/
+// Check rule
+async function checkRule() {
+  const needRules = [
+    fortune.getRule(),
+    janken.getRule(),
+    majiUranaiCollect.getRule(),
+  ];
+
+  let rules = await getRules(bearerToken);
+  const addRules = needRules.filter((needRule) =>
+    !rules.data?.some((rule) => rule.value === needRule.value)
+  );
+  if (addRules.length > 0) {
+    console.log("addRules", addRules);
+    const aRules = await changeRules(bearerToken, { add: addRules });
+    console.log(aRules);
+  }
+  rules = await getRules(bearerToken);
+  console.log("Rules", rules.data);
+}
+await checkRule();
+
+const option: StreamParam = {
+  ...fortune.option,
+  ...janken.option,
+  ...majiUranaiCollect.option,
+};
+console.log("option", option);
 
 connectStream(
   bearerToken,
   (res) => {
+    console.log(res);
     fortune.callback(res);
     janken.callback(res);
     majiUranaiCollect.callback(res);
   },
-  Object.assign({
-    expansions: {
-      author_id: true,
-    },
-    "user.fields": {
-      username: true,
-    },
-  }, option),
+  option,
 );
