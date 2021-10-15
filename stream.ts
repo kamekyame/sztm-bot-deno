@@ -74,7 +74,7 @@ const option: StreamParam = {
 };
 console.log("option", option);
 
-connectStream(
+await connectStream(
   bearerToken,
   (res) => {
     console.log(res);
@@ -84,3 +84,5 @@ connectStream(
   },
   option,
 );
+
+Deno.exit(1);
